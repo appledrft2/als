@@ -1,10 +1,12 @@
 <?php 
 session_start();
 include('includes/autoload.php'); 
+echo 'test1';
 ?> 
 <?php
 
       if(isset($_POST['btnLogin'])){
+        echo 'test2';
           $username = $_POST['email-user'];
           $password = $_POST['password'];
 
