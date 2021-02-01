@@ -1,0 +1,132 @@
+<?php 
+session_start();
+include('../../includes/autoload.php');
+if(isset($_POST['btnLogout'])){
+  session_unset();
+  header('location:'.$baseurl.'');
+}
+if(isset($_SESSION['dbu'])){ 
+  if($_SESSION['dbc'] != false){
+      header("location:".$baseurl."dashboard");
+  }
+}else{
+  header('location:'.$baseurl.'');
+} 
+if(isset($_GET['id'])){
+  $sql = "SELECT id,firstname,lastname,gender,type,phone,email,username FROM tbl_user WHERE id=?";
+  $qry = $connection->prepare($sql);
+  $qry->bind_param("i",$_GET['id']);
+  $qry->execute();
+  $qry->bind_result($id,$dbf,$dbl,$dbg,$dbt,$dbp,$dbe,$dbu);
+  $qry->store_result();
+  $qry->fetch ();
+}
+$pages = 'user/index';
+?>
+<?php include('../header.php'); ?>
+  <!-- =============================================== -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="row">
+          <h3 class="col-md-6 text-left">
+            <span class="text-left">Edit Employee</span>
+
+          </h3>
+          <h3 class="col-md-6 text-right">
+            <span class="text-right"><i class="fa fa-calendar"></i> <?php echo date('D, M. d Y') ?></span>
+          </h3>
+        </div>
+      </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header"></div>
+            <div class="box-body">
+              <form method="POST" action="#">
+              <div class="col-md-6">
+                <label>Firstname <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="firstname" value="<?php echo $dbf; ?>" required>
+                <label>Lastname <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="lastname" value="<?php echo $dbl; ?>" required>
+                <label>Gender <i style="color:red">*</i></label>
+                <select class="form-control" name="gender">
+                  <option selected disabled value="">Select Gender</option>
+                  <option <?php if($dbg == 'Male'){echo 'Selected';} ?>>Male</option>
+                  <option <?php if($dbg == 'Female'){echo 'Selected';} ?>>Female</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label>User Type <i style="color:red">*</i></label>
+                <select class="form-control" name="type">
+                  <option selected disabled value="">Select Type</option>
+                  <option <?php if($dbt == 'Encoder'){echo 'Selected';} ?>>Encoder</option>
+                  <option <?php if($dbt == 'Admin'){echo 'Selected';} ?>>Admin</option>
+                </select>
+                <label>Phone <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="phone" value="<?php echo $dbl; ?>"  required>
+                <label>Email <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="email" value="<?php echo $dbl; ?>"  required>
+                <hr>
+                <label>User Account</label>
+                <hr>
+                <label>Username <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="username" value="<?php echo $dbu; ?>" required>
+                <label>Password </label> (Leave empty if you dont want to change)
+                <input type="password" class="form-control" name="password" >
+              </div>
+              
+            </div>
+            <div class="box-footer">
+              <div class="pull-right">
+                <a href="<?php echo $baseurl; ?>dashboard/users" class="btn btn-default" > Go Back</a>
+                <button name="btnSave" class="btn btn-primary" > Save Changes</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 2.4.18
+    </div>
+    <strong>Copyright &copy; 2020-2021 <a href="#">Bath & Bark Grooming and Veterinary Services Management System</a>.</strong> All rights
+    reserved.
+  </footer>
+
+</div>
+<!-- ./wrapper -->
+
+<?php include('footer.php') ?>
+
+<?php 
+if(isset($_POST['btnSave'])){
+
+    if($_POST['password'] != ''){
+      $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+      $sql = "UPDATE tbl_user SET firstname=?,lastname=?,gender=?,type=?,phone=?,email=?,username=?,password=? WHERE id=?";
+      $qry = $connection->prepare($sql);
+      $qry->bind_param("ssssssssi",$_POST['firstname'],$_POST['lastname'],$_POST['gender'],$_POST['type'],$_POST['phone'],$_POST['email'],$_POST['username'],$hashed_password,$_GET['id']);
+    }else{
+      $sql = "UPDATE tbl_user SET firstname=?,lastname=?,gender=?,type=?,phone=?,email=?,username=? WHERE id=?";
+      $qry = $connection->prepare($sql);
+      $qry->bind_param("sssssssi",$_POST['firstname'],$_POST['lastname'],$_POST['gender'],$_POST['type'],$_POST['phone'],$_POST['email'],$_POST['username'],$_GET['id']);
+    }
+  
+    if($qry->execute()) {
+      echo '<meta http-equiv="refresh" content="0; URL=index.php?status=updated">';
+    }else{
+      echo '<meta http-equiv="refresh" content="0; URL=edit.php?status=error">';
+    }
+}
+?>

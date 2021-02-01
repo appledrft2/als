@@ -22,19 +22,55 @@ $pages ='dashboard/index';
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="row">
-          <h1 class="col-md-6 text-left">
-            
+          <h3 class="col-md-6 text-left">
+            <span class="text-left">Overview</span>
 
-          </h1>
-          <h2 class="col-md-6 text-right">
-              
-          </h2>
+          </h3>
+          <h3 class="col-md-6 text-right">
+            <span class="text-right"><i class="fa fa-calendar"></i> <?php echo date('D, M. d Y') ?></span>
+          </h3>
         </div>
       </section>
 
     <!-- Main content -->
     <section class="content">
-      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="text-center">OUR MISSION</h3>
+            </div>
+            <div class="box-body">
+                <h4 class="text-justify">To provide social protection and
+promote the rights and welfare
+of the poor, vulnerable and the
+disadvantaged individual, family
+and community to contribute to
+poverty allevation and
+empowerment throught swd
+policies, programs, projects and
+services implemted with or
+through LGUs, NGOs, POs, other GOs
+ and other members of civil society.</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="text-center">OUR VISION</h3>
+            </div>
+            <div class="box-body">
+                <h4 class="text-justify">The Deparment of Social Welfare and
+                Development envisions all Filipinos
+                free from hunger and poverty,
+                have equal access to opportunities,
+                enabled by a fair, just and
+                peaceful society.</h4>
+            </div>
+          </div>
+        </div>
+      </div>
 
       
     </section>

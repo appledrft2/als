@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Dashboard | ALS</title>
+  <title>Welcome to Web Based Assistance Liquidation with SMS Notification</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -41,7 +41,7 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LS</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">ALS</span>
+      <span class="logo-lg">WBALS</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -89,8 +89,10 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header text-center">MAIN NAVIGATION</li>
-        <li class="<?php if($pages == 'dashboard/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>employee/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-        <li class="treeview <?php if($pages == 'employee/index' || $pages == 'employee/add'){echo 'active'; } ?>">
+        <li class="<?php if($pages == 'dashboard/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+
+        <li class="<?php if($pages == 'intake/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/intake"><i class="fa fa-file"></i><i class="fa fa-pencil"></i> <span>Intake</span></a></li>
+        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>">
           <a href="#">
             <i class="fa fa-users"></i> <span>Manage User</span>
             <span class="pull-right-container">
@@ -98,8 +100,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="<?php if($pages == 'employee/add'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>employee/dashboard/employees/add.php"><i class="fa fa-plus-circle"></i> Add User</a></li>
-            <li class="<?php if($pages == 'employee/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>employee/dashboard/employees"><i class="fa fa-list"></i> View Users</a></li>
+            <li class="<?php if($pages == 'user/add'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/users/add.php"><i class="fa fa-plus-circle"></i> Add User</a></li>
+            <li class="<?php if($pages == 'user/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/users"><i class="fa fa-list"></i> View Users</a></li>
           </ul>
         </li>
          

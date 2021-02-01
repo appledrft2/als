@@ -7,7 +7,7 @@ if(isset($_SESSION['dbu'])){
 ?>
 <?php include('header.php'); ?>
 <body class="hold-transition login-page">
-  <div id="topstrip"><a href="#">ALS - Assistance Liquidation System w/ SMS notifier</a></div>
+  <div id="topstrip"><a href="#">Web Based Assistance Liquidation with SMS Notification</a></div>
 <div class="login-box">
   <div class="login-logo">
     <a href="#"><b>Management</b>Login</a>
