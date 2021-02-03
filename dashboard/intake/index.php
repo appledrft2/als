@@ -298,9 +298,9 @@ if(isset($_POST['btnSave'])){
     echo 'SUCCESSS';
     echo $last_id;
 
-    $sql = "INSERT INTO tbl_beneficiary(client_id,firstname,middlename,lastname,extension,gender,contact,dob,civil_status,purok,barangay,city) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO tbl_beneficiary(client_id,firstname,middlename,lastname,extension,gender,contact,dob,civil_status,purok,barangay,city,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $qry = $connection->prepare($sql);
-    $qry->bind_param('isssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity']);
+    $qry->bind_param('issssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],'Pending');
 
     if($qry->execute()) {
       echo 'SUCCESSS2';
