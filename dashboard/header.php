@@ -21,7 +21,8 @@
   <link rel="stylesheet" href="<?php echo $baseurl ?>template/plugins/pace/pace.min.css">
     <!-- DataTables -->
   <link rel="stylesheet" href="<?php echo $baseurl ?>template/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="<?php echo $baseurl ?>template/plugins/iCheck/all.css">
     <!-- fullCalendar -->
   <link rel="stylesheet" href="<?php echo $baseurl; ?>template/bower_components/fullcalendar/dist/fullcalendar.min.css">
   <link rel="stylesheet" href="<?php echo $baseurl; ?>template/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
@@ -92,9 +93,38 @@
         <li class="<?php if($pages == 'dashboard/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
 
         <li class="<?php if($pages == 'intake/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/intake"><i class="fa fa-file"></i><i class="fa fa-pencil"></i> <span>Intake</span></a></li>
+        
+        
+
+        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'user/add'){echo 'active'; } ?>">
+          <a href="#">
+            <i class="fa fa-clock-o"></i> <span>Pending</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="<?php if($pages == 'pending/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/pending"><i class="fa fa-users"></i> View Beneficiaries</a></li>
+            
+          </ul>
+        </li>
         <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>">
           <a href="#">
-            <i class="fa fa-users"></i> <span>Manage User</span>
+            <i class="fa fa-history"></i> <span>Released</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="<?php if($pages == 'user/add'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/users/add.php"><i class="fa fa-users"></i> View Beneficiaries</a></li>
+            
+          </ul>
+        </li>
+
+
+        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>">
+          <a href="#">
+            <i class="fa fa-users"></i> <span>Manage Users</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
