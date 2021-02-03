@@ -96,7 +96,7 @@
         
         
 
-        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'user/add'){echo 'active'; } ?>">
+        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'pending/edu'|| $pages == 'pending/med'|| $pages == 'pending/burial'){echo 'active'; } ?>">
           <a href="#">
             <i class="fa fa-clock-o"></i> <span>Pending</span>
             <span class="pull-right-container">
@@ -105,10 +105,13 @@
           </a>
           <ul class="treeview-menu">
             <li class="<?php if($pages == 'pending/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/pending"><i class="fa fa-users"></i> View Beneficiaries</a></li>
+            <li class="<?php if($pages == 'pending/edu'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/pending/edu.php"><i class="fa fa-university"></i> Educational Assistance</a></li>
+            <li class="<?php if($pages == 'pending/med'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/pending/med.php"><i class="fa fa-ambulance"></i> Medical Assistance</a></li>
+            <li class="<?php if($pages == 'pending/burial'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/pending/burial.php"><i class="fa fa-hotel"></i> Burial Assistance</a></li>
             
           </ul>
         </li>
-        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>">
+        <li class="treeview <?php if($pages == 'released/index' || $pages == 'released/edu'|| $pages == 'released/med'|| $pages == 'released/burial'){echo 'active'; } ?>">
           <a href="#">
             <i class="fa fa-history"></i> <span>Released</span>
             <span class="pull-right-container">
@@ -116,7 +119,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="<?php if($pages == 'user/add'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/users/add.php"><i class="fa fa-users"></i> View Beneficiaries</a></li>
+           <li class="<?php if($pages == 'released/index'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/released"><i class="fa fa-users"></i> View Beneficiaries</a></li>
+           <li class="<?php if($pages == 'released/edu'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/released/edu.php"><i class="fa fa-university"></i> Educational Assistance</a></li>
+           <li class="<?php if($pages == 'released/med'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/released/med.php"><i class="fa fa-ambulance"></i> Medical Assistance</a></li>
+           <li class="<?php if($pages == 'released/burial'){echo 'active'; } ?>"><a href="<?php echo $baseurl; ?>dashboard/released/burial.php"><i class="fa fa-hotel"></i> Burial Assistance</a></li>
             
           </ul>
         </li>

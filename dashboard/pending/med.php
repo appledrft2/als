@@ -12,7 +12,7 @@ if(isset($_SESSION['dbu'])){
 }else{
   header('location:'.$baseurl.'');
 }
-$pages ='pending/index';
+$pages ='pending/med';
 ?>
 <?php include('../header.php'); ?>
   <!-- =============================================== -->
@@ -23,7 +23,7 @@ $pages ='pending/index';
     <section class="content-header">
         <div class="row">
           <h3 class="col-md-6 text-left">
-            <span class="text-left">All Pending Beneficiaries</span>
+            <span class="text-left">Medical Assistance Beneficiaries (Pending)</span>
 
           </h3>
           <h3 class="col-md-6 text-right">
@@ -45,7 +45,7 @@ $pages ='pending/index';
         }if($_GET['status'] == 'updated'){
           echo '<div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p><i class="icon fa fa-info"></i>  Record Successfully Added to Released.</p>
+                    <p><i class="icon fa fa-info"></i>  Record Successfully Updated.</p>
                    
                   </div>';
         }if($_GET['status'] == 'deleted'){
@@ -84,7 +84,7 @@ $pages ='pending/index';
                <tbody>
 
                   <?php 
-                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Pending' ORDER BY timestamp ASC";
+                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE c.assistance_type = 'Medical Needs' AND b.status = 'Pending' ORDER BY timestamp ASC";
                     $qry = $connection->prepare($sql);
                     $qry->execute();
                     $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba);
@@ -109,7 +109,7 @@ $pages ='pending/index';
                       echo"<td>";
                       echo $dba;
                       echo"</td>";
-                      
+                   
                       echo"</td>";
                       echo"<td>";
                       echo $dbtimestamp;
@@ -179,17 +179,14 @@ $pages ='pending/index';
 if(isset($_POST['btnMark'])){
 
   if(isset($_POST['checkboxvar'])){
-      $st = 'Released';
-    for($i = 0;$i < count($_POST['checkboxvar']);$i++){
-       $sql = "UPDATE tbl_beneficiary SET release_date=?,status=? WHERE id=?";
-       $qry = $connection->prepare($sql);
-       $qry->bind_param("ssi",$_POST['rdate'],$st,$_POST['checkboxvar'][$i]);
-       if($qry->execute()) {
-         echo '<meta http-equiv="refresh" content="0; URL=index.php?status=updated">';
-       }else{
-         echo '<meta http-equiv="refresh" content="0; URL=edit.php?status=error">';
-       }
-    }
+
+    print_r($_POST['checkboxvar']);
+  }else{
+    echo 'empty';
   }
+
+
 }
+
+
  ?>

@@ -12,7 +12,7 @@ if(isset($_SESSION['dbu'])){
 }else{
   header('location:'.$baseurl.'');
 }
-$pages ='pending/index';
+$pages ='released/burial';
 ?>
 <?php include('../header.php'); ?>
   <!-- =============================================== -->
@@ -23,7 +23,7 @@ $pages ='pending/index';
     <section class="content-header">
         <div class="row">
           <h3 class="col-md-6 text-left">
-            <span class="text-left">All Pending Beneficiaries</span>
+            <span class="text-left">Burial Assistance Beneficiaries (Released)</span>
 
           </h3>
           <h3 class="col-md-6 text-right">
@@ -45,7 +45,7 @@ $pages ='pending/index';
         }if($_GET['status'] == 'updated'){
           echo '<div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p><i class="icon fa fa-info"></i>  Record Successfully Added to Released.</p>
+                    <p><i class="icon fa fa-info"></i>  Record Successfully Updated.</p>
                    
                   </div>';
         }if($_GET['status'] == 'deleted'){
@@ -63,20 +63,17 @@ $pages ='pending/index';
           
           <div class="box-body">
             
-            <form method="POST" action="#">
-              <label>Release date <i style="color:red">*</i></label><br>
-              <input type="date" name="rdate" class="redate" disabled>
-            <button type="submit" name="btnMark" class="btn btn-primary btn-sm btnm" disabled><i class="fa fa-calendar"></i>&nbsp;Add to Released</button>
-            <br><br>
             <table id="table1" class="table table-bordered">
               <thead>
                 <tr>
-                  <th width="1%">#</th>
+
                   <th>Fullname</th>
                   <th>Address</th>
+                  <th>Date Released</th>
                   <th>Contact Number</th>
                   <th>Assistance Type</th>
                   <th>Amount</th>
+
                   <th>Date Added</th>
                   <th>Action</th>
                 </tr>
@@ -84,21 +81,21 @@ $pages ='pending/index';
                <tbody>
 
                   <?php 
-                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Pending' ORDER BY timestamp ASC";
+                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount,b.release_date FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE c.assistance_type = 'Burial Needs' AND b.status = 'Released' ORDER BY timestamp ASC";
                     $qry = $connection->prepare($sql);
                     $qry->execute();
-                    $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba);
+                    $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba,$dbrd);
                     $qry->store_result();
                     while($qry->fetch ()) {
                       echo"<tr>";
-                      echo"<td><center>";
-                      echo "<input type='checkbox' name='checkboxvar[]' class='checkvar' value='".$id."'>";
-                      echo"</center></td>";
-                      echo"<td>";
+                    
                       echo $dbf." ".$dbm." ".$dbl;
                       echo"</td>";
                       echo"<td>";
                       echo "Prk.".$dbpr.", Brgy.".$dbb.", ".$dbc." City";
+                      echo"</td>";
+                      echo"<td>";
+                      echo $dbrd;
                       echo"</td>";
                       echo"<td>";
                       echo $dbcontact;
@@ -110,7 +107,6 @@ $pages ='pending/index';
                       echo $dba;
                       echo"</td>";
                       
-                      echo"</td>";
                       echo"<td>";
                       echo $dbtimestamp;
                       echo"</td>";
@@ -124,8 +120,7 @@ $pages ='pending/index';
                   ?>
                 </tbody>
             </table>
-            
-            </form>
+           
           </div>
         </div>
       </div>
@@ -179,17 +174,15 @@ $pages ='pending/index';
 if(isset($_POST['btnMark'])){
 
   if(isset($_POST['checkboxvar'])){
-      $st = 'Released';
-    for($i = 0;$i < count($_POST['checkboxvar']);$i++){
-       $sql = "UPDATE tbl_beneficiary SET release_date=?,status=? WHERE id=?";
-       $qry = $connection->prepare($sql);
-       $qry->bind_param("ssi",$_POST['rdate'],$st,$_POST['checkboxvar'][$i]);
-       if($qry->execute()) {
-         echo '<meta http-equiv="refresh" content="0; URL=index.php?status=updated">';
-       }else{
-         echo '<meta http-equiv="refresh" content="0; URL=edit.php?status=error">';
-       }
-    }
+
+    print_r($_POST['checkboxvar']);
+    echo $_POST['redate'];
+  }else{
+    echo 'empty';
   }
+
+
 }
+
+
  ?>
