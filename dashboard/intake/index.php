@@ -134,8 +134,8 @@ $pages ='intake/index';
                 <input type="text" class="form-control" name="bfirstname" required>
                 <label>Middlename <i style="color:red">*</i></label>
                 <input type="text" class="form-control" name="bmiddlename" required>
-                <label>Extension (Jr., Sr. etc.) <i style="color:red">*</i></label>
-                <input type="text" class="form-control" name="bextension" required>
+                <label>Extension (Jr., Sr. etc.) <i style="color:red"></i></label>
+                <input type="text" class="form-control" name="bextension" >
                 <label>Gender <i style="color:red">*</i></label>
                 <select class="form-control" name="bgender" required>
                   <option selected disabled value="">Select Gender</option>

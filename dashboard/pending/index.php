@@ -1,6 +1,7 @@
 <?php 
 session_start();
 include('../../includes/autoload.php');
+include('itextmo.php');
 if(isset($_POST['btnLogout'])){
   session_unset();
   header('location:'.$baseurl.'');
@@ -45,7 +46,13 @@ $pages ='pending/index';
         }if($_GET['status'] == 'updated'){
           echo '<div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p><i class="icon fa fa-info"></i>  Record Successfully Added to Released.</p>
+                    <p><i class="icon fa fa-info"></i>  Record Successfully Updated.</p>
+                   
+                  </div>';
+        }if($_GET['status'] == 'released'){
+          echo '<div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p><i class="icon fa fa-info"></i>  Beneficiaries Successfully SMS Notified And Added to Released.</p>
                    
                   </div>';
         }if($_GET['status'] == 'deleted'){
@@ -64,9 +71,11 @@ $pages ='pending/index';
           <div class="box-body">
             
             <form method="POST" action="#">
-              <label>Release date <i style="color:red">*</i></label><br>
-              <input type="date" name="rdate" class="redate" disabled>
+             
+            <label>Release date <i style="color:red">*</i></label><br>
+            <input type="date" name="rdate" class="redate" disabled>
             <button type="submit" name="btnMark" class="btn btn-primary btn-sm btnm" disabled><i class="fa fa-calendar"></i>&nbsp;Add to Released</button>
+          
             <br><br>
             <table id="table1" class="table table-bordered">
               <thead>
@@ -84,10 +93,10 @@ $pages ='pending/index';
                <tbody>
 
                   <?php 
-                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Pending' ORDER BY timestamp ASC";
+                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount,c.id FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Pending' ORDER BY timestamp ASC";
                     $qry = $connection->prepare($sql);
                     $qry->execute();
-                    $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba);
+                    $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba,$dbc_id);
                     $qry->store_result();
                     while($qry->fetch ()) {
                       echo"<tr>";
@@ -116,7 +125,7 @@ $pages ='pending/index';
                       echo"</td>";
                       echo"<td>";
                       echo '<a class="btn btn-info btn-sm" href="edit.php?id='.$id.'"><i class="fa fa-edit"></i></a>
-                        <a href="delete.php?id='.$id.'" ';?>onclick="return confirm('Are you sure?')"<?php echo 'class="btn btn-danger btn-sm" ><i class="fa fa-remove"></i></a>';
+                        <a href="delete.php?id='.$dbc_id.'" ';?>onclick="return confirm('Are you sure?')"<?php echo 'class="btn btn-danger btn-sm" ><i class="fa fa-remove"></i></a>';
                       echo"</td>";
                       echo"</tr>";
                     }
@@ -181,11 +190,32 @@ if(isset($_POST['btnMark'])){
   if(isset($_POST['checkboxvar'])){
       $st = 'Released';
     for($i = 0;$i < count($_POST['checkboxvar']);$i++){
+
+      $sql = "SELECT contact FROM tbl_beneficiary WHERE id=?";
+      $qry = $connection->prepare($sql);
+      $qry->bind_param("i",$_POST['checkboxvar'][$i]);
+      $qry->execute();
+      $qry->bind_result($db_contact);
+      $qry->store_result();
+      $qry->fetch();
+
        $sql = "UPDATE tbl_beneficiary SET release_date=?,status=? WHERE id=?";
        $qry = $connection->prepare($sql);
        $qry->bind_param("ssi",$_POST['rdate'],$st,$_POST['checkboxvar'][$i]);
        if($qry->execute()) {
-         echo '<meta http-equiv="refresh" content="0; URL=index.php?status=updated">';
+
+        $result = itexmo($db_contact,"We are pleased to inform you that we will be releasing you at ".$_POST['rdate'],"TR-ANRAD195024_GQH7E", "5f4hvl)l&1");
+        if ($result == ""){
+        echo "iTexMo: No response from server!!!
+        Please check the METHOD used (CURL or CURL-LESS). If you are using CURL then try CURL-LESS and vice versa.  
+        Please CONTACT US for help. ";  
+        }else if ($result == 0){
+        echo '<meta http-equiv="refresh" content="0; URL=index.php?status=released">';
+        }
+        else{ 
+        echo "Error Num ". $result . " was encountered!";
+        }
+         
        }else{
          echo '<meta http-equiv="refresh" content="0; URL=edit.php?status=error">';
        }
