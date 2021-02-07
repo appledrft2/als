@@ -97,6 +97,7 @@ $pages ='intake/index';
                  <label>Relationship to Beneficiary <i style="color:red">*</i></label>
                 <select class="form-control" name="crelation" required>
                   <option selected disabled value="">Select Relation</option>
+                  <option>Here in Client</option>
                   <option>Grand Mother</option>
                   <option>Grand Father</option>
                   <option>Mother</option>
@@ -125,8 +126,11 @@ $pages ='intake/index';
                 <input type="text" class="form-control" name="ccity" required>
               </div>
             </div>
-            <h4><b>IMPORMASYON UKOL SA BENEPISYARYO</b> (Beneficiary's Identifying Information)</h4>
-            <div class="row">
+            
+            <div class="row" id="beninfo">
+              <div class="col-md-12">
+                <h4><b>IMPORMASYON UKOL SA BENEPISYARYO</b> (Beneficiary's Identifying Information)</h4>
+              </div>
               <div class="col-md-6">
                 <label>Lastname <i style="color:red">*</i></label>
                 <input type="text" class="form-control" name="blastname" required>
@@ -166,6 +170,7 @@ $pages ='intake/index';
                 <input type="text" class="form-control" name="bcity" required>
               </div>
             </div>
+
             <h4><b>IMPORMASYON NG PAMILYA</b> (Family Information)</h4>
             <div class="row">
               <div class="col-md-12">
@@ -278,6 +283,14 @@ $pages ='intake/index';
 
 <?php include('footer.php') ?>
 <script type="text/javascript">
+
+  $('select[name="crelation"]').change(function(){
+    if($(this).val() == 'Here in Client'){
+      $('#beninfo').hide();
+    }else{
+      $('#beninfo').show();
+    }
+  });
   $('#morefamily').click(function(){
     $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
 
@@ -296,16 +309,19 @@ if(isset($_POST['btnSave'])){
   if($qry->execute()) {
     $last_id = mysqli_insert_id($connection);
     $st = 'Pending';
-    echo 'SUCCESSS';
-    echo $last_id;
 
     $sql = "INSERT INTO tbl_beneficiary(client_id,firstname,middlename,lastname,extension,gender,contact,dob,civil_status,purok,barangay,city,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $qry = $connection->prepare($sql);
-    $qry->bind_param('issssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$st);
+    if($_POST['crelation'] == 'Here in Client'){
+      $qry->bind_param('issssssssssss',$last_id,$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$st);
+    }else{
+      $qry->bind_param('issssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$st);
+    }
 
-    if($qry->execute()) {
-      echo 'SUCCESSS2';
+    if($qry->execute()){
+
       $fam_arr = count($_POST['ffirstname']);
+
       for($i = 0;$i < $fam_arr;$i++){
 
         $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -316,10 +332,7 @@ if(isset($_POST['btnSave'])){
         }else{
           echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
         }
-
       }
-
-      
 
     }else{
       echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
@@ -328,9 +341,7 @@ if(isset($_POST['btnSave'])){
 
 
   }else{
-    
     echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
-
   }
 
 }

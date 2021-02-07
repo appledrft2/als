@@ -115,6 +115,7 @@ $pages ='pending/index';
                  <label>Relationship to Beneficiary <i style="color:red">*</i></label>
                 <select class="form-control" name="crelation" required>
                   <option selected disabled value="">Select Relation</option>
+                  <option <?php if($dbcrelation == 'Here in Client'){ echo 'selected'; }?>>Here in Client</option>
                   <option <?php if($dbcrelation == 'Grand Mother'){ echo 'selected'; }?>>Grand Mother</option>
                   <option <?php if($dbcrelation == 'Grand Father'){ echo 'selected'; }?> >Grand Father</option>
                   <option <?php if($dbcrelation == 'Mother'){ echo 'selected'; }?> >Mother</option>
@@ -143,8 +144,11 @@ $pages ='pending/index';
                 <input type="text" class="form-control" name="ccity" value="<?php echo $dbccity; ?>" required>
               </div>
             </div>
-            <h4><b>IMPORMASYON UKOL SA BENEPISYARYO</b> (Beneficiary's Identifying Information)</h4>
-            <div class="row">
+           
+            <div class="row" id="beninfo" <?php if($dbcrelation == 'Here in Client'){ echo "style='display:none;'";} ?> >
+              <div class="col-md-12">
+                <h4><b>IMPORMASYON UKOL SA BENEPISYARYO</b> (Beneficiary's Identifying Information)</h4>
+              </div>
               <div class="col-md-6">
                 <label>Lastname <i style="color:red">*</i></label>
                 <input type="text" class="form-control" name="blastname" value="<?php echo $dbbl; ?>" required>
