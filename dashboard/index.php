@@ -11,7 +11,42 @@ if(isset($_SESSION['dbu'])){
   }
 }else{
   header('location:'.$baseurl.'');
+} 
+
+$sql = "SELECT count(*) FROM tbl_beneficiary WHERE status = 'Pending'";
+$qry = $connection->prepare($sql);
+$qry->execute();
+$qry->bind_result($pcount);
+$qry->store_result();
+$qry->fetch();
+if($qry->num_rows() == 0) {
+  echo "cannot fetch data";
+}$sql = "SELECT count(*) FROM tbl_beneficiary WHERE status = 'Released'";
+$qry = $connection->prepare($sql);
+$qry->execute();
+$qry->bind_result($rcount);
+$qry->store_result();
+$qry->fetch();
+if($qry->num_rows() == 0) {
+  echo "cannot fetch data";
+}$sql = "SELECT count(*) FROM tbl_beneficiary";
+$qry = $connection->prepare($sql);
+$qry->execute();
+$qry->bind_result($bcount);
+$qry->store_result();
+$qry->fetch();
+if($qry->num_rows() == 0) {
+  echo "cannot fetch data";
+}$sql = "SELECT count(*) FROM tbl_user";
+$qry = $connection->prepare($sql);
+$qry->execute();
+$qry->bind_result($ucount);
+$qry->store_result();
+$qry->fetch();
+if($qry->num_rows() == 0) {
+  echo "cannot fetch data";
 }
+
 $pages ='dashboard/index';
 ?>
 <?php include('header.php'); ?>
@@ -41,7 +76,7 @@ $pages ='dashboard/index';
 
                   <div class="info-box-content">
                     <span class="info-box-text">Total Pending</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-number"><?php echo $pcount; ?> test1</span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -54,7 +89,7 @@ $pages ='dashboard/index';
 
                   <div class="info-box-content">
                     <span class="info-box-text">Total Released</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-number"><?php echo $rcount; ?></span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -67,7 +102,7 @@ $pages ='dashboard/index';
 
                   <div class="info-box-content">
                     <span class="info-box-text">Total Beneficiaries</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-number"><?php echo $bcount; ?></span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -80,7 +115,7 @@ $pages ='dashboard/index';
 
                   <div class="info-box-content">
                     <span class="info-box-text">Total Users</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-number"><?php echo $ucount; ?></span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
