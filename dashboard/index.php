@@ -76,7 +76,7 @@ $pages ='dashboard/index';
 
                   <div class="info-box-content">
                     <span class="info-box-text">Total Pending</span>
-                    <span class="info-box-number"><?php echo $pcount; ?> test1</span>
+                    <span class="info-box-number"><?php echo $pcount; ?> </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
