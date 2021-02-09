@@ -61,12 +61,14 @@ $pages ='pending/edu';
       <div class="col-md-12">
         <div class="box">
           
-          <div class="box-body">
-            
+        <div class="box-body">
             <form method="POST" action="#">
+            <div class="form-inline">
               <label>Release date <i style="color:red">*</i></label><br>
-              <input type="date" name="rdate" class="redate" disabled>
-            <button type="submit" name="btnMark" class="btn btn-primary btn-sm btnm" disabled><i class="fa fa-calendar"></i>&nbsp;Add to Released</button>
+              <input type="date" name="rdate" class="redate form-control" disabled>
+              <button type="submit" name="btnMark" class="btn btn-primary btn-md btnm" disabled><i class="fa fa-calendar"></i>&nbsp;Add to Released</button>
+              
+            </div>
             <br><br>
             <table id="table1" class="table table-bordered">
               <thead>
@@ -179,14 +181,40 @@ $pages ='pending/edu';
 if(isset($_POST['btnMark'])){
 
   if(isset($_POST['checkboxvar'])){
+      $st = 'Released';
 
-    print_r($_POST['checkboxvar']);
-  }else{
-    echo 'empty';
+    for($i = 0;$i < count($_POST['checkboxvar']);$i++){
+
+      $sql = "SELECT contact FROM tbl_beneficiary WHERE id=?";
+      $qry = $connection->prepare($sql);
+      $qry->bind_param("i",$_POST['checkboxvar'][$i]);
+      $qry->execute();
+      $qry->bind_result($db_contact);
+      $qry->store_result();
+      $qry->fetch();
+
+       $sql = "UPDATE tbl_beneficiary SET release_date=?,status=? WHERE id=?";
+       $qry = $connection->prepare($sql);
+       $qry->bind_param("ssi",$_POST['rdate'],$st,$_POST['checkboxvar'][$i]);
+
+       if($qry->execute()) {
+
+        $result = itexmo($db_contact,"We are pleased to inform you that we will be releasing you at ".$_POST['rdate'],"TR-ANRAD195024_GQH7E", "5f4hvl)l&1");
+        if ($result == ""){
+        echo "iTexMo: No response from server!!!
+        Please check the METHOD used (CURL or CURL-LESS). If you are using CURL then try CURL-LESS and vice versa.  
+        Please CONTACT US for help. ";  
+        }else if ($result == 0){
+        echo '<meta http-equiv="refresh" content="0; URL=index.php?status=released">';
+        }
+        else{ 
+        echo "Error Num ". $result . " was encountered!";
+        }
+         
+       }else{
+         echo '<meta http-equiv="refresh" content="0; URL=edit.php?status=error">';
+       }
+    }
   }
-
-
 }
-
-
  ?>

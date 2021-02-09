@@ -102,9 +102,10 @@ $pages ='user/add';
 
 <?php 
 if(isset($_POST['btnSave'])){
+    $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $sql = "INSERT INTO tbl_user(firstname,lastname,gender,type,phone,email,username,password) VALUES(?,?,?,?,?,?,?,?)";
     $qry = $connection->prepare($sql);
-    $qry->bind_param("ssssssss",$_POST['fname'],$_POST['lname'],$_POST['gender'],$_POST['type'],$_POST['phone'],$_POST['email'],$_POST['username'],$_POST['password']);
+    $qry->bind_param("ssssssss",$_POST['fname'],$_POST['lname'],$_POST['gender'],$_POST['type'],$_POST['phone'],$_POST['email'],$_POST['username'],$hashed_password);
 
     if($qry->execute()) {
     

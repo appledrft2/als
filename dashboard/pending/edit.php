@@ -20,11 +20,11 @@ if(isset($_GET['id'])){
   $qry->bind_result($dbbid,$dbclient_id,$dbbf,$dbbl,$dbbm,$dbbex,$dbbg,$dbbcon,$dbbdob,$dbbcs,$dbbpurok,$dbbbarangay,$dbbcity);
   $qry->store_result();
   if($qry->fetch()){
-    $sql = "SELECT id,firstname,lastname,middlename,extension,gender,contact,dob,civil_status,purok,barangay,city,relation_to_beni,id_presented,assistance_type,client_cat,ben_cat,amount FROM tbl_client WHERE id=?";
+    $sql = "SELECT id,firstname,lastname,middlename,extension,gender,contact,dob,civil_status,purok,barangay,city,relation_to_beni,id_presented,assistance_type,client_cat,ben_cat,amount,work,salary FROM tbl_client WHERE id=?";
     $qry = $connection->prepare($sql);
     $qry->bind_param("i",$dbclient_id);
     $qry->execute();
-    $qry->bind_result($dbcid,$dbcf,$dbcl,$dbcm,$dbcex,$dbcg,$dbccon,$dbcdob,$dbccs,$dbcpurok,$dbcbarangay,$dbccity,$dbcrelation,$dbcid_presented,$dbcat,$dbcclient_cat,$dbcben_cat,$dbbcamount);
+    $qry->bind_result($dbcid,$dbcf,$dbcl,$dbcm,$dbcex,$dbcg,$dbccon,$dbcdob,$dbccs,$dbcpurok,$dbcbarangay,$dbccity,$dbcrelation,$dbcid_presented,$dbcat,$dbcclient_cat,$dbcben_cat,$dbbcamount,$dbcwork,$dbcsalary);
     $qry->store_result();
     $qry->fetch();
   }
@@ -111,6 +111,8 @@ $pages ='pending/index';
                   <option selected disabled value="">Select Status</option>
                   <option <?php if($dbccs == 'Single'){ echo 'selected'; }?>>Single</option>
                   <option <?php if($dbccs == 'Married'){ echo 'selected'; }?> >Married</option>
+                  <option <?php if($dbccs == 'widowed'){ echo 'selected'; }?>>widowed</option>
+                  <option <?php if($dbccs == 'Seperated'){ echo 'selected'; }?>>Seperated</option>
                 </select>
                  <label>Relationship to Beneficiary <i style="color:red">*</i></label>
                 <select class="form-control" name="crelation" required>
@@ -175,6 +177,8 @@ $pages ='pending/index';
                   <option selected disabled value="">Select Status</option>
                   <option <?php if($dbbcs == 'Single'){ echo 'selected'; }?>>Single</option>
                   <option <?php if($dbbcs == 'Married'){ echo 'selected'; }?>>Married</option>
+                  <option <?php if($dbbcs == 'widowed'){ echo 'selected'; }?>>widowed</option>
+                  <option <?php if($dbbcs == 'Seperated'){ echo 'selected'; }?>>Seperated</option>
                 </select>
                
                 <hr>
@@ -197,6 +201,7 @@ $pages ='pending/index';
                       <th>Firstname</th>
                       <th>Lastname</th>
                       <th>Middlename</th>
+                      <th>Ext (Jr., Sr., etc.)</th>
                       <th>Gender</th>
                       <th>Date of Birth</th>
                       <th>Relation</th>
@@ -209,17 +214,18 @@ $pages ='pending/index';
                     <?php 
    
                       $disabled = 0;
-                      $sql = "SELECT id,firstname,lastname,middlename,gender,dob,relation,occupation,income FROM tbl_family_info WHERE client_id=?";
+                      $sql = "SELECT id,firstname,lastname,middlename,extension,gender,dob,relation,occupation,income FROM tbl_family_info WHERE client_id=?";
                       $qry = $connection->prepare($sql);
                       $qry->bind_param("i",$dbclient_id);
                       $qry->execute();
-                      $qry->bind_result($fiid,$dbff,$dbfl,$dbfm,$dbfg,$dbfdob,$dbfrel,$dbfocc,$dbfincome);
+                      $qry->bind_result($fiid,$dbff,$dbfl,$dbfm,$dbfe,$dbfg,$dbfdob,$dbfrel,$dbfocc,$dbfincome);
                       $qry->store_result();
                       while($qry->fetch ()){
                       echo '<tr>
                           <td><input type="text" class="form-control" name="ffirstname[]" value="'.$dbff.'" required></td>
                           <td><input type="text" class="form-control" name="flastname[]" value="'.$dbfl.'" required></td>
                           <td><input type="text" class="form-control" name="fmiddlename[]" value="'.$dbfm.'" required></td>
+                          <td><input type="text" class="form-control" name="fextension[]" value="'.$dbfe.'" ></td>
                           <td>
                             <select class="form-control" name="fgender[]" required>
                               <option selected disabled value="">Select Gender</option>';
@@ -252,7 +258,7 @@ $pages ='pending/index';
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colspan="9"><button id="morefamily" type="button" class="pull-right btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;Add more</button></td>
+                      <td colspan="10"><button id="morefamily" type="button" class="pull-right btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;Add more</button></td>
                     </tr>
                   </tfoot>
                 </table>
@@ -262,7 +268,10 @@ $pages ='pending/index';
 
             <div class="row">
               <div class=col-md-6>
-                
+                <label>Trabaho (Work) <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="cwork" value="<?php echo $dbcwork; ?>" required>
+                <label>Salary <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="csalary" value="<?php echo $dbcsalary; ?>" required>
                 <label>Financial Assistance Type <i style="color:red">*</i></label>
                 <select class="form-control" name="cassistance_type" >
                   <option selected disabled value="">Select Type</option>
@@ -331,8 +340,15 @@ $pages ='pending/index';
 
 <?php include('footer.php') ?>
 <script type="text/javascript">
+  $('select[name="crelation"]').change(function(){
+    if($(this).val() == 'Here in Client'){
+      $('#beninfo').hide();
+    }else{
+      $('#beninfo').show();
+    }
+  });
   $('#morefamily').click(function(){
-    $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
+    $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td><td><input type="text" class="form-control" name="fextension[]" ></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
 
   });
    $('#tbl_fam').on('click', '.delfam', function () { 
@@ -342,15 +358,21 @@ $pages ='pending/index';
 <?php 
 if(isset($_POST['btnSave'])){
 
-  $sql = "UPDATE tbl_client SET lastname=?,firstname=?,middlename=?,extension=?,gender=?,contact=?,dob=?,civil_status=?,relation_to_beni=?,id_presented=?,purok=?,barangay=?,city=?,assistance_type=?,client_cat=?,ben_cat=?,amount=? WHERE id=?";
+  $sql = "UPDATE tbl_client SET lastname=?,firstname=?,middlename=?,extension=?,gender=?,contact=?,dob=?,civil_status=?,relation_to_beni=?,id_presented=?,purok=?,barangay=?,city=?,assistance_type=?,client_cat=?,ben_cat=?,amount=?,work=?,salary=? WHERE id=?";
   $qry = $connection->prepare($sql);
-  $qry->bind_param("sssssssssssssssssi",$_POST['clastname'],$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cassistance_type'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['camount'],$dbclient_id);
+  $qry->bind_param("sssssssssssssssssssi",$_POST['clastname'],$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cassistance_type'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['camount'],$_POST['cwork'],$_POST['csalary'],$dbclient_id);
 
   if($qry->execute()) {
 
-      $sql = "UPDATE tbl_beneficiary SET lastname=?,firstname=?,middlename=?,extension=?,gender=?,contact=?,dob=?,civil_status=?,purok=?,barangay=?,city=? WHERE id=?";
-      $qry = $connection->prepare($sql);
-      $qry->bind_param("sssssssssssi",$_POST['blastname'],$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$_GET['id']);
+      if($_POST['crelation'] == 'Here in Client'){
+        $sql = "UPDATE tbl_beneficiary SET lastname=?,firstname=?,middlename=?,extension=?,gender=?,contact=?,dob=?,civil_status=?,purok=?,barangay=?,city=? WHERE id=?";
+        $qry = $connection->prepare($sql);
+        $qry->bind_param("sssssssssssi",$_POST['clastname'],$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_GET['id']);
+      }else{
+        $sql = "UPDATE tbl_beneficiary SET lastname=?,firstname=?,middlename=?,extension=?,gender=?,contact=?,dob=?,civil_status=?,purok=?,barangay=?,city=? WHERE id=?";
+        $qry = $connection->prepare($sql);
+        $qry->bind_param("sssssssssssi",$_POST['blastname'],$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$_GET['id']);
+      }
 
       if($qry->execute()) {
           
@@ -364,9 +386,9 @@ if(isset($_POST['btnSave'])){
 
           for($i = 0;$i < $fam_arr;$i++){
 
-            $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,extension,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?,?)";
             $qry = $connection->prepare($sql);
-            $qry->bind_param('issssssss',$dbclient_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
+            $qry->bind_param('isssssssss',$dbclient_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fextension'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
             if($qry->execute()){
               echo '<meta http-equiv="refresh" content="0; URL=index.php?status=updated">';
             }else{

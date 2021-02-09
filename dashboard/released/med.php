@@ -60,7 +60,17 @@ $pages ='released/med';
     <div class="row">
       <div class="col-md-12">
         <div class="box">
-          
+          <div class="box-header">
+            <form method="POST" action="export_med.php">
+              <div class="form-inline">
+              <label>Date From :<i style="color:red"></i></label>
+              <input type="date" class="form-control" name="dfrom" required>
+              <label>To :<i style="color:red"></i></label>
+              <input type="date" class="form-control" name="dto" required>
+              <button type="submit" name="export" class="btn btn-primary btn-md"> Export to Excel</button>
+            </div>
+            </form>
+          </div>
           <div class="box-body">
             
             <table id="table1" class="table table-bordered">

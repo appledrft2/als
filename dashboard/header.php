@@ -59,7 +59,7 @@
         <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="hidden-xs"><?php echo 'Welcome, '.$_SESSION['dbg'].' '.$_SESSION['dbf'].' '.$_SESSION['dbl'] ?></span>
+              <span class="hidden-xs"><?php echo 'Welcome, '.$_SESSION['dbg'].' '.$_SESSION['dbf'].' '.$_SESSION['dbl'].' ('.$_SESSION['dbtype'].')' ?></span>
             </a>
             <ul class="dropdown-menu">
              
@@ -96,7 +96,7 @@
         
         
 
-        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'pending/edu'|| $pages == 'pending/med'|| $pages == 'pending/burial'){echo 'active'; } ?>">
+        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'pending/edu'|| $pages == 'pending/med'|| $pages == 'pending/burial'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
           <a href="#">
             <i class="fa fa-clock-o"></i> <span>Pending</span>
             <span class="pull-right-container">
@@ -111,7 +111,7 @@
             
           </ul>
         </li>
-        <li class="treeview <?php if($pages == 'released/index' || $pages == 'released/edu'|| $pages == 'released/med'|| $pages == 'released/burial'){echo 'active'; } ?>">
+        <li class="treeview <?php if($pages == 'released/index' || $pages == 'released/edu'|| $pages == 'released/med'|| $pages == 'released/burial'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
           <a href="#">
             <i class="fa fa-history"></i> <span>Released</span>
             <span class="pull-right-container">
@@ -128,7 +128,7 @@
         </li>
 
 
-        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>">
+        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
           <a href="#">
             <i class="fa fa-users"></i> <span>Manage Users</span>
             <span class="pull-right-container">

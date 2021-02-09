@@ -93,6 +93,8 @@ $pages ='intake/index';
                   <option selected disabled value="">Select Status</option>
                   <option>Single</option>
                   <option>Married</option>
+                  <option>Widowed</option>
+                  <option>Seperated</option>
                 </select>
                  <label>Relationship to Beneficiary <i style="color:red">*</i></label>
                 <select class="form-control" name="crelation" required>
@@ -157,6 +159,8 @@ $pages ='intake/index';
                   <option selected disabled value="">Select Status</option>
                   <option>Single</option>
                   <option>Married</option>
+                  <option>Widowed</option>
+                  <option>Seperated</option>
                 </select>
                
                 <hr>
@@ -180,6 +184,7 @@ $pages ='intake/index';
                       <th>Firstname</th>
                       <th>Lastname</th>
                       <th>Middlename</th>
+                      <th>Ext. (Jr., Sr. etc.)</th>
                       <th>Gender</th>
                       <th>Date of Birth</th>
                       <th>Relation</th>
@@ -193,6 +198,7 @@ $pages ='intake/index';
                       <td><input type="text" class="form-control" name="ffirstname[]" required></td>
                       <td><input type="text" class="form-control" name="flastname[]" required></td>
                       <td><input type="text" class="form-control" name="fmiddlename[]" required></td>
+                      <td><input type="text" class="form-control" name="fextension[]" required></td>
                       <td>
                         <select class="form-control" name="fgender[]" required>
                           <option selected disabled value="">Select Gender</option>
@@ -209,7 +215,7 @@ $pages ='intake/index';
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colspan="9"><button id="morefamily" type="button" class="pull-right btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;Add more</button></td>
+                      <td colspan="10"><button id="morefamily" type="button" class="pull-right btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;Add more</button></td>
                     </tr>
                   </tfoot>
                 </table>
@@ -219,14 +225,18 @@ $pages ='intake/index';
 
             <div class="row">
               <div class=col-md-6>
-                
+                <label>Trabaho (Work) <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="wwork" required>
+                <label>Salary <i style="color:red">*</i></label>
+                <input type="text" class="form-control" name="ssalary" required>
+
                 <label>Financial Assistance Type <i style="color:red">*</i></label>
                 <select class="form-control" name="cassistance_type">
                   <option selected disabled value="">Select Type</option>
                   <option>Educational Support</option><option>Medical Needs</option><option>Burial Needs</option>
                   <option>Transportation Needs</option><option>Food Subsidy</option><option>Non-Food Items</option>
                 </select>
-                <label>Amount <i style="color:red">*</i></label>
+                <label>Assistance Amount <i style="color:red">*</i></label>
                 <input type="number" class="form-control" name="camount" required>
               </div>
               <div class=col-md-6>
@@ -292,7 +302,7 @@ $pages ='intake/index';
     }
   });
   $('#morefamily').click(function(){
-    $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
+    $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required><td><input type="text" class="form-control" name="fextension[]" required></td></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
 
   });
    $('#tbl_fam').on('click', '.delfam', function () { 
@@ -302,9 +312,9 @@ $pages ='intake/index';
 <?php 
 if(isset($_POST['btnSave'])){
 
-  $sql = "INSERT INTO tbl_client(firstname,middlename,lastname,extension,gender,contact,dob,civil_status,relation_to_beni,id_presented,purok,barangay,city,client_cat,ben_cat,assistance_type,amount) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  $sql = "INSERT INTO tbl_client(firstname,middlename,lastname,extension,gender,contact,dob,civil_status,relation_to_beni,id_presented,purok,barangay,city,client_cat,ben_cat,assistance_type,amount,work,salary) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   $qry = $connection->prepare($sql);
-  $qry->bind_param("ssssssssssssssssi",$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['cassistance_type'],$_POST['camount']);
+  $qry->bind_param("sssssssssssssssssss",$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['cassistance_type'],$_POST['camount'],$_POST['wwork'],$_POST['ssalary']);
 
   if($qry->execute()) {
     $last_id = mysqli_insert_id($connection);
@@ -324,24 +334,24 @@ if(isset($_POST['btnSave'])){
 
       for($i = 0;$i < $fam_arr;$i++){
 
-        $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,extension,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?,?)";
         $qry = $connection->prepare($sql);
-        $qry->bind_param('issssssss',$last_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
+        $qry->bind_param('isssssssss',$last_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fextension'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
         if($qry->execute()) {
           echo '<meta http-equiv="refresh" content="0; URL=index.php?status=created">';
         }else{
-          echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
+          echo '<meta http-equiv="refresh" content="0; URL=test2.php?status=error">';
         }
       }
 
     }else{
-      echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
+      echo '<meta http-equiv="refresh" content="0; URL=test.php?status=error">';
     }
 
 
 
   }else{
-    echo '<meta http-equiv="refresh" content="0; URL=add.php?status=error">';
+    echo '<meta http-equiv="refresh" content="0; URL=index.php?status=error">';
   }
 
 }
