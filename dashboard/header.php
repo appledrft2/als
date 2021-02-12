@@ -96,7 +96,7 @@
         
         
 
-        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'pending/edu'|| $pages == 'pending/med'|| $pages == 'pending/burial'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
+        <li class="treeview <?php if($pages == 'pending/index' || $pages == 'pending/edu'|| $pages == 'pending/med'|| $pages == 'pending/burial'){echo 'active'; } ?>" >
           <a href="#">
             <i class="fa fa-clock-o"></i> <span>Pending</span>
             <span class="pull-right-container">
@@ -111,7 +111,7 @@
             
           </ul>
         </li>
-        <li class="treeview <?php if($pages == 'released/index' || $pages == 'released/edu'|| $pages == 'released/med'|| $pages == 'released/burial'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
+        <li class="treeview <?php if($pages == 'released/index' || $pages == 'released/edu'|| $pages == 'released/med'|| $pages == 'released/burial'){echo 'active'; } ?>" >
           <a href="#">
             <i class="fa fa-history"></i> <span>Released</span>
             <span class="pull-right-container">
@@ -128,7 +128,7 @@
         </li>
 
 
-        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none"';} ?>>
+        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>" >
           <a href="#">
             <i class="fa fa-users"></i> <span>Manage Users</span>
             <span class="pull-right-container">

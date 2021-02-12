@@ -15,7 +15,7 @@ if(isset($_SESSION['dbu'])){
 
 if(isset($_POST['export'])){
 	$output = '';
-	$sql = "SELECT b.release_date,c.city,c.barangay,c.purok,c.lastname,c.firstname,c.middlename,c.extension,c.gender,c.dob,c.assistance_type,c.client_cat,c.contact,c.work,c.salary,c.relation_to_beni,b.lastname,b.firstname,b.middlename,b.extension,b.gender,b.dob,b.contact,b.city,b.barangay,b.purok,c.id_presented,c.ben_cat FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Released' AND c.assistance_type = 'Burial Needs' AND c.assistance_type = 'Educational Support' AND b.release_date BETWEEN ? AND ? ";
+	$sql = "SELECT b.release_date,c.city,c.barangay,c.purok,c.lastname,c.firstname,c.middlename,c.extension,c.gender,c.dob,c.assistance_type,c.client_cat,c.contact,c.work,c.salary,c.relation_to_beni,b.lastname,b.firstname,b.middlename,b.extension,b.gender,b.dob,b.contact,b.city,b.barangay,b.purok,c.id_presented,c.ben_cat FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Released' AND c.assistance_type = 'Burial Needs'  AND b.release_date BETWEEN ? AND ? ";
 	$qry = $connection->prepare($sql);
 	$qry->bind_param("ss",$_POST['dfrom'],$_POST['dto']);
 	$qry->execute();

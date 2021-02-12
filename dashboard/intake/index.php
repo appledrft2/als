@@ -48,10 +48,10 @@ $pages ='intake/index';
                     <p><i class="icon fa fa-info"></i>  Record Successfully Updated.</p>
                    
                   </div>';
-        }if($_GET['status'] == 'deleted'){
-          echo '<div class="alert alert-danger alert-dismissible">
+        }if($_GET['status'] == 'duplicate'){
+          echo '<div class="alert alert-warning alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p><i class="icon fa fa-remove"></i>  Record Successfully Deleted.</p>
+                    <p><i class="icon fa fa-clone"></i>  Duplicate Entry: Beneficiary Already Has Pending Request.</p>
                    
                   </div>';
         }
@@ -97,7 +97,7 @@ $pages ='intake/index';
                   <option>Seperated</option>
                 </select>
                  <label>Relationship to Beneficiary <i style="color:red">*</i></label>
-                <select class="form-control" name="crelation" required>
+                <select class="form-control" name="crelation" id="crel" required>
                   <option selected disabled value="">Select Relation</option>
                   <option>Here in Client</option>
                   <option>Grand Mother</option>
@@ -195,21 +195,21 @@ $pages ='intake/index';
                   </thead>
                   <tbody id="tbl_fam">
                     <tr>
-                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>
-                      <td><input type="text" class="form-control" name="flastname[]" required></td>
-                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>
-                      <td><input type="text" class="form-control" name="fextension[]" required></td>
+                      <td><input type="text" class="form-control" name="ffirstname[]" ></td>
+                      <td><input type="text" class="form-control" name="flastname[]" ></td>
+                      <td><input type="text" class="form-control" name="fmiddlename[]" ></td>
+                      <td><input type="text" class="form-control" name="fextension[]" ></td>
                       <td>
-                        <select class="form-control" name="fgender[]" required>
+                        <select class="form-control" name="fgender[]" >
                           <option selected disabled value="">Select Gender</option>
                           <option>Male</option>
                           <option>Female</option>
                         </select>
                       </td>
-                      <td><input type="date" class="form-control" name="fdob[]" required></td>
-                      <td><input type="text" class="form-control" name="frelation[]" required></td>
-                      <td><input type="text" class="form-control" name="foccupation[]" required></td>
-                      <td><input type="text" class="form-control" name="fincome[]" required></td>
+                      <td><input type="date" class="form-control" name="fdob[]" ></td>
+                      <td><input type="text" class="form-control" name="frelation[]" ></td>
+                      <td><input type="text" class="form-control" name="foccupation[]" ></td>
+                      <td><input type="text" class="form-control" name="fincome[]" ></td>
                       <td><button class="btn btn-danger btn-sm" disabled=""><i class="fa fa-remove"></i></button></td>
                     </tr>
                   </tbody>
@@ -296,11 +296,36 @@ $pages ='intake/index';
 
   $('select[name="crelation"]').change(function(){
     if($(this).val() == 'Here in Client'){
+      
+
+      $('input[name="blastname"]').attr('required',false);
+      $('input[name="bfirstname"]').attr('required',false);
+      $('input[name="bmiddlename"]').attr('required',false);
+      $('select[name="bgender"]').attr('required',false);
+      $('input[name="bcontact"]').attr('required',false);
+      $('input[name="bdob"]').attr('required',false);
+      $('select[name="bcivil_status"]').attr('required',false);
+      $('input[name="bpurok"]').attr('required',false);
+      $('input[name="bbarangay"]').attr('required',false);
+      $('input[name="bcity"]').attr('required',false);
       $('#beninfo').hide();
     }else{
+
       $('#beninfo').show();
+      $('input[name="blastname"]').attr('required',true);
+      $('input[name="bfirstname"]').attr('required',true);
+      $('input[name="bmiddlename"]').attr('required',true);
+      $('select[name="bgender"]').attr('required',true);
+      $('input[name="bcontact"]').attr('required',true);
+      $('input[name="bdob"]').attr('required',true);
+      $('select[name="bcivil_status"]').attr('required',true);
+      $('input[name="bpurok"]').attr('required',true);
+      $('input[name="bbarangay"]').attr('required',true);
+      $('input[name="bcity"]').attr('required',true);
     }
+
   });
+
   $('#morefamily').click(function(){
     $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required><td><input type="text" class="form-control" name="fextension[]" required></td></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
 
@@ -312,47 +337,67 @@ $pages ='intake/index';
 <?php 
 if(isset($_POST['btnSave'])){
 
-  $sql = "INSERT INTO tbl_client(firstname,middlename,lastname,extension,gender,contact,dob,civil_status,relation_to_beni,id_presented,purok,barangay,city,client_cat,ben_cat,assistance_type,amount,work,salary) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+  $sql = "SELECT id from tbl_beneficiary WHERE status = 'Pending' AND firstname = ? AND middlename = ? AND lastname = ?";
   $qry = $connection->prepare($sql);
-  $qry->bind_param("sssssssssssssssssss",$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['cassistance_type'],$_POST['camount'],$_POST['wwork'],$_POST['ssalary']);
+  if($_POST['crelation'] == 'Here in Client'){
+  $qry->bind_param("sss",$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname']);
+  }else{
+  $qry->bind_param("sss",$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname']);
+  }
+  $qry->execute();
+  $qry->bind_result($dbcheckid);
+  $qry->store_result();
+  if($qry->fetch ()){
 
-  if($qry->execute()) {
-    $last_id = mysqli_insert_id($connection);
-    $st = 'Pending';
-
-    $sql = "INSERT INTO tbl_beneficiary(client_id,firstname,middlename,lastname,extension,gender,contact,dob,civil_status,purok,barangay,city,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    echo '<meta http-equiv="refresh" content="0; URL=index.php?status=duplicate">';
+  }else{
+    
+    $sql = "INSERT INTO tbl_client(firstname,middlename,lastname,extension,gender,contact,dob,civil_status,relation_to_beni,id_presented,purok,barangay,city,client_cat,ben_cat,assistance_type,amount,work,salary) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $qry = $connection->prepare($sql);
-    if($_POST['crelation'] == 'Here in Client'){
-      $qry->bind_param('issssssssssss',$last_id,$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$st);
-    }else{
-      $qry->bind_param('issssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$st);
-    }
+    $qry->bind_param("sssssssssssssssssss",$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['crelation'],$_POST['cid_presented'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$_POST['cclient_category'],$_POST['cben_category'],$_POST['cassistance_type'],$_POST['camount'],$_POST['wwork'],$_POST['ssalary']);
 
-    if($qry->execute()){
+    if($qry->execute()) {
+      $last_id = mysqli_insert_id($connection);
+      $st = 'Pending';
 
-      $fam_arr = count($_POST['ffirstname']);
-
-      for($i = 0;$i < $fam_arr;$i++){
-
-        $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,extension,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?,?)";
-        $qry = $connection->prepare($sql);
-        $qry->bind_param('isssssssss',$last_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fextension'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
-        if($qry->execute()) {
-          echo '<meta http-equiv="refresh" content="0; URL=index.php?status=created">';
-        }else{
-          echo '<meta http-equiv="refresh" content="0; URL=test2.php?status=error">';
-        }
+      $sql = "INSERT INTO tbl_beneficiary(client_id,firstname,middlename,lastname,extension,gender,contact,dob,civil_status,purok,barangay,city,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $qry = $connection->prepare($sql);
+      if($_POST['crelation'] == 'Here in Client'){
+        $qry->bind_param('issssssssssss',$last_id,$_POST['cfirstname'],$_POST['cmiddlename'],$_POST['clastname'],$_POST['cextension'],$_POST['cgender'],$_POST['ccontact'],$_POST['cdob'],$_POST['ccivil_status'],$_POST['cpurok'],$_POST['cbarangay'],$_POST['ccity'],$st);
+      }else{
+        $qry->bind_param('issssssssssss',$last_id,$_POST['bfirstname'],$_POST['bmiddlename'],$_POST['blastname'],$_POST['bextension'],$_POST['bgender'],$_POST['bcontact'],$_POST['bdob'],$_POST['bcivil_status'],$_POST['bpurok'],$_POST['bbarangay'],$_POST['bcity'],$st);
       }
 
+      if($qry->execute()){
+
+        $fam_arr = count($_POST['ffirstname']);
+
+        for($i = 0;$i < $fam_arr;$i++){
+
+          $sql = "INSERT INTO tbl_family_info(client_id,firstname,middlename,lastname,extension,gender,dob,relation,occupation,income) VALUES(?,?,?,?,?,?,?,?,?,?)";
+          $qry = $connection->prepare($sql);
+          $qry->bind_param('isssssssss',$last_id,$_POST['ffirstname'][$i],$_POST['fmiddlename'][$i],$_POST['flastname'][$i],$_POST['fextension'][$i],$_POST['fgender'][$i],$_POST['fdob'][$i],$_POST['frelation'][$i],$_POST['foccupation'][$i],$_POST['fincome'][$i]);
+          if($qry->execute()) {
+            echo '<meta http-equiv="refresh" content="0; URL=index.php?status=created">';
+          }else{
+            echo '<meta http-equiv="refresh" content="0; URL=test2.php?status=error">';
+          }
+        }
+
+      }else{
+        echo '<meta http-equiv="refresh" content="0; URL=test.php?status=error">';
+      }
+
+
+
     }else{
-      echo '<meta http-equiv="refresh" content="0; URL=test.php?status=error">';
+      echo '<meta http-equiv="refresh" content="0; URL=index.php?status=error">';
     }
 
-
-
-  }else{
-    echo '<meta http-equiv="refresh" content="0; URL=index.php?status=error">';
   }
+
+
 
 }
 

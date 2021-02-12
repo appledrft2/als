@@ -77,53 +77,41 @@ $pages ='released/index';
               <thead>
                 <tr>
                 
-                  <th>Fullname</th>
-                  <th>Address</th>
-                  <th>Date Released</th>
-                  <th>Contact Number</th>
+                  <th>Release Date</th>
                   <th>Assistance Type</th>
-                  <th>Amount</th>
-
-                  <th>Date Added</th>
+                  <th>Total Amount</th>
+                  <th>Date Created</th>
                   <th>Action</th>
                 </tr>
               </thead>
                <tbody>
 
                   <?php 
-                    $sql = "SELECT b.id,b.firstname,b.middlename,b.lastname,b.purok,b.barangay,b.city,c.assistance_type,b.contact,b.status,c.timestamp,c.amount,b.release_date,c.id FROM tbl_beneficiary AS b INNER JOIN tbl_client AS c ON c.id = b.client_id WHERE b.status = 'Released' ORDER BY timestamp ASC";
+                    $sql = "SELECT id,release_date,assistance_type,total,timestamp FROM tbl_released  ORDER BY timestamp ASC";
                     $qry = $connection->prepare($sql);
                     $qry->execute();
-                    $qry->bind_result($id,$dbf,$dbm,$dbl,$dbpr,$dbb,$dbc,$dbat,$dbcontact,$dbs, $dbtimestamp,$dba,$dbrd,$dbc_id);
+                    $qry->bind_result($id,$dbrdate,$dbasstype,$dbtotal,$dbtimestamp);
                     $qry->store_result();
                     while($qry->fetch ()) {
                       echo"<tr>";
-                     
                       echo"<td>";
-                      echo $dbf." ".$dbm." ".$dbl;
+                      echo date_format(new DateTime($dbrdate),'M. d, Y');
                       echo"</td>";
                       echo"<td>";
-                      echo "Prk.".$dbpr.", Brgy.".$dbb.", ".$dbc." City";
+                      echo $dbasstype;
                       echo"</td>";
-                      echo"<td>";
-                      echo $dbrd;
+                       echo"<td class='text-right'>&#8369; ";
+                      echo number_format($dbtotal,2);
                       echo"</td>";
-                      echo"<td>";
-                      echo $dbcontact;
-                      echo"</td>";
-                      echo"<td>";
-                      echo $dbat;
-                      echo"</td>";
-                      echo"<td>";
-                      echo $dba;
-                      echo"</td>";
-                      
-                      echo"<td>";
+                      echo"<td >";
                       echo $dbtimestamp;
                       echo"</td>";
                       echo"<td>";
-                      echo '
-                        <a href="delete.php?id='.$dbc_id.'" ';?>onclick="return confirm('Are you sure?')"<?php echo 'class="btn btn-danger btn-sm" ><i class="fa fa-remove"></i></a>';
+                      if($_SESSION['dbtype'] != 'Encoder'){ 
+                         echo '<a class="btn btn-info btn-sm" href="view.php?id='.$id.'"><i class="fa fa-eye"></i></a>';
+                        echo '
+                        <a href="delete.php?id='.$id.'" ';?>onclick="return confirm('Are you sure?')"<?php echo 'class="btn btn-danger btn-sm" ><i class="fa fa-remove"></i></a>';
+                      }
                       echo"</td>";
                       echo"</tr>";
                     }
@@ -166,19 +154,7 @@ $pages ='released/index';
     });
 
 
-    $('.checkvar').on('change', function() {
-      
-      if ($('input[name="checkboxvar[]"]:checked').length > 0) {
-          $('.redate').prop('disabled',false);
-          $('.redate').prop('required',true);
-          $('.btnm').prop('disabled',false);
-      }else{
-        $('.redate').prop('disabled',true);
-        $('.redate').prop('required',false);
-        $('.btnm').prop('disabled',true);
-      }
-
-    });
+    
 </script>
 
 <?php 

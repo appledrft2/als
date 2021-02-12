@@ -222,12 +222,12 @@ $pages ='pending/index';
                       $qry->store_result();
                       while($qry->fetch ()){
                       echo '<tr>
-                          <td><input type="text" class="form-control" name="ffirstname[]" value="'.$dbff.'" required></td>
-                          <td><input type="text" class="form-control" name="flastname[]" value="'.$dbfl.'" required></td>
-                          <td><input type="text" class="form-control" name="fmiddlename[]" value="'.$dbfm.'" required></td>
+                          <td><input type="text" class="form-control" name="ffirstname[]" value="'.$dbff.'" ></td>
+                          <td><input type="text" class="form-control" name="flastname[]" value="'.$dbfl.'" ></td>
+                          <td><input type="text" class="form-control" name="fmiddlename[]" value="'.$dbfm.'" ></td>
                           <td><input type="text" class="form-control" name="fextension[]" value="'.$dbfe.'" ></td>
                           <td>
-                            <select class="form-control" name="fgender[]" required>
+                            <select class="form-control" name="fgender[]" >
                               <option selected disabled value="">Select Gender</option>';
                             if($dbfg == 'Male'){
                               echo '<option selected>Male</option>';
@@ -240,10 +240,10 @@ $pages ='pending/index';
 
                     echo'</select>
                           </td>
-                          <td><input type="date" class="form-control" name="fdob[]" value="'.$dbfdob.'" required></td>
-                          <td><input type="text" class="form-control" name="frelation[]" value="'.$dbfrel.'" required></td>
-                          <td><input type="text" class="form-control" name="foccupation[]" value="'.$dbfocc.'" required></td>
-                          <td><input type="text" class="form-control" name="fincome[]" value="'.$dbfincome.'" required></td>';
+                          <td><input type="date" class="form-control" name="fdob[]" value="'.$dbfdob.'" ></td>
+                          <td><input type="text" class="form-control" name="frelation[]" value="'.$dbfrel.'" ></td>
+                          <td><input type="text" class="form-control" name="foccupation[]" value="'.$dbfocc.'" ></td>
+                          <td><input type="text" class="form-control" name="fincome[]" value="'.$dbfincome.'" ></td>';
                         if($disabled == 0){
                         echo '<td><button class="btn btn-danger btn-sm" disabled><i class="fa fa-remove"></i></button></td>';
                         }else{
@@ -340,12 +340,46 @@ $pages ='pending/index';
 
 <?php include('footer.php') ?>
 <script type="text/javascript">
-  $('select[name="crelation"]').change(function(){
+   $('select[name="crelation"]').change(function(){
     if($(this).val() == 'Here in Client'){
+      
+
+      $('input[name="blastname"]').attr('required',false);
+      $('input[name="bfirstname"]').attr('required',false);
+      $('input[name="bmiddlename"]').attr('required',false);
+      $('select[name="bgender"]').attr('required',false);
+      $('input[name="bcontact"]').attr('required',false);
+      $('input[name="bdob"]').attr('required',false);
+      $('select[name="bcivil_status"]').attr('required',false);
+      $('input[name="bpurok"]').attr('required',false);
+      $('input[name="bbarangay"]').attr('required',false);
+      $('input[name="bcity"]').attr('required',false);
       $('#beninfo').hide();
     }else{
+
       $('#beninfo').show();
+      $('input[name="blastname"]').attr('required',true);
+      $('input[name="bfirstname"]').attr('required',true);
+      $('input[name="bmiddlename"]').attr('required',true);
+      $('select[name="bgender"]').attr('required',true);
+      $('input[name="bcontact"]').attr('required',true);
+      $('input[name="bdob"]').attr('required',true);
+      $('select[name="bcivil_status"]').attr('required',true);
+      $('input[name="bpurok"]').attr('required',true);
+      $('input[name="bbarangay"]').attr('required',true);
+      $('input[name="bcity"]').attr('required',true);
+      $('input[name="blastname"]').val('');
+      $('input[name="bfirstname"]').val('');
+      $('input[name="bmiddlename"]').val('');
+      $('select[name="bgender"]').val('');
+      $('input[name="bcontact"]').val('');
+      $('input[name="bdob"]').val('');
+      $('select[name="bcivil_status"]').val('');
+      $('input[name="bpurok"]').val('');
+      $('input[name="bbarangay"]').val('');
+      $('input[name="bcity"]').val('');
     }
+
   });
   $('#morefamily').click(function(){
     $("#tbl_fam").append('<tr><tr>                      <td><input type="text" class="form-control" name="ffirstname[]" required></td>                      <td><input type="text" class="form-control" name="flastname[]" required></td>                      <td><input type="text" class="form-control" name="fmiddlename[]" required></td><td><input type="text" class="form-control" name="fextension[]" ></td>                      <td>                        <select class="form-control" name="fgender[]" required>                          <option selected disabled value="">Select Gender</option>                          <option>Male</option>                          <option>Female</option>                        </select>                      </td>                      <td><input type="date" class="form-control" name="fdob[]" required></td>                      <td><input type="text" class="form-control" name="frelation[]" required></td>                      <td><input type="text" class="form-control" name="foccupation[]" required></td>                      <td><input type="text" class="form-control" name="fincome[]" required></td>                      <td><button class="delfam btn btn-danger btn-sm"><i class="fa fa-remove"></i></button></td></tr>');
