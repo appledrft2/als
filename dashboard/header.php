@@ -128,7 +128,7 @@
         </li>
 
 
-        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>" >
+        <li class="treeview <?php if($pages == 'user/index' || $pages == 'user/add'){echo 'active'; } ?>" <?php if($_SESSION['dbtype'] == 'Encoder'){ echo 'style="display:none;"';} ?> >
           <a href="#">
             <i class="fa fa-users"></i> <span>Manage Users</span>
             <span class="pull-right-container">
