@@ -55,10 +55,22 @@ $pages ='pending/burial';
                     <p><i class="icon fa fa-remove"></i>  Record Successfully Deleted.</p>
                    
                   </div>';
+        }if($_GET['status'] == 'error'){
+          echo '<div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p><i class="icon fa fa-remove"></i>  There was a problem proccessing your request.</p>
+                   
+                  </div>';
         }if($_GET['status'] == 'smsnotified'){
           echo '<div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <p><i class="icon fa fa-info"></i>  Beneficaries Successfully SMS Notified.</p>
+                   
+                  </div>';
+        }if($_GET['status'] == 'released'){
+          echo '<div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p><i class="icon fa fa-info"></i>  Beneficaries Successfully Added to Released.</p>
                    
                   </div>';
         }
@@ -265,6 +277,7 @@ if(isset($_POST['btnMark'])){
 }
 
 if(isset($_POST['btnsendSms'])){
+  include('smsgateway.php');
   $smsyes = "Yes";
   $length = count($_POST['checkboxvar']);
 
@@ -276,27 +289,31 @@ if(isset($_POST['btnsendSms'])){
     $qry->execute();
     $qry->bind_result($db_contact,$dbamount);
     $qry->store_result();
-    $qry->fetch();
+    if($qry->fetch()){
 
-    $result = itexmo($db_contact,"We are pleased to inform you that we will be releasing you at ".$_POST['rdate'],"TR-ANRAD195024_GQH7E", "5f4hvl)l&1");
-    if ($result == ""){
-    echo "iTexMo: No response from server!!!
-    Please check the METHOD used (CURL or CURL-LESS). If you are using CURL then try CURL-LESS and vice versa.  
-    Please CONTACT US for help. ";  
-    }else if ($result == 0){
-      echo '<meta http-equiv="refresh" content="0; URL=index.php?status=smsnotified">';
+    $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTU2MzY0MTA2OSwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjcxODc4LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.1L8SvVoKmlDqpEqa-_4R90-AwxzLqsIf2C1kaMgkqis";
+
+      $phone_number = $db_contact;
+      $message = "We are pleased to inform you that we will be releasing you at ".$_POST['rdate'];
+      $deviceID = 123044;
+      $options = [];
+
+      $smsGateway = new SmsGateway($token);
+      $result = $smsGateway->sendMessageToNumber($phone_number, $message, $deviceID, $options);
+      
+      if($result){
+        $sql = "UPDATE tbl_beneficiary SET smsnotify=? WHERE id=?";
+          $qry = $connection->prepare($sql);
+          $qry->bind_param("si",$smsyes,$_POST['checkboxvar'][$i]);
+
+          if($qry->execute()){
+            echo '<meta http-equiv="refresh" content="0; URL=index.php?status=smsnotified">';
+          }
+      }else{
+        echo '<meta http-equiv="refresh" content="0; URL=index.php?status=error">';
+      }
+
     }
-    else{ 
-    echo "Error Num ". $result . " was encountered!";
-    }
-
-    $sql = "UPDATE tbl_beneficiary SET smsnotify=? WHERE id=?";
-    $qry = $connection->prepare($sql);
-    $qry->bind_param("si",$smsyes,$_POST['checkboxvar'][$i]);
-
-    $qry->execute();
-
-    
 
   }
 
